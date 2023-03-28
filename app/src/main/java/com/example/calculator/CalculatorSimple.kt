@@ -1,12 +1,11 @@
 package com.example.calculator
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -21,7 +20,11 @@ class CalculatorSimple : AppCompatActivity() {
     }
 
     fun makeToast(vararg texts: String) {
-        Toast.makeText(this@CalculatorSimple, texts.joinToString(separator = "\n") , Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            this@CalculatorSimple,
+            texts.joinToString(separator = "\n"),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     fun addNumberToString(inputString: String, number: Number): String {
@@ -33,7 +36,13 @@ class CalculatorSimple : AppCompatActivity() {
         return resultString
     }
 
-    fun equal(firstString: String, previewString: String, mFirstNumber: TextView, mPreview: TextView, operation: MathOperation): String {
+    fun equal(
+        firstString: String,
+        previewString: String,
+        mFirstNumber: TextView,
+        mPreview: TextView,
+        operation: MathOperation
+    ): String {
         if (previewString.isEmpty()) {
             return ""
         }
@@ -49,7 +58,8 @@ class CalculatorSimple : AppCompatActivity() {
                 MathOperation.MULTIPLICATION -> firstNum * secondNum
                 MathOperation.ADDITION -> firstNum + secondNum
                 MathOperation.SUBTRACTION -> firstNum - secondNum
-                MathOperation.DIVISION -> firstNum.divide(secondNum, 8, RoundingMode.HALF_UP).stripTrailingZeros()
+                MathOperation.DIVISION -> firstNum.divide(secondNum, 8, RoundingMode.HALF_UP)
+                    .stripTrailingZeros()
                 MathOperation.NONE -> return ""
             }
             val df = DecimalFormat("#.####################")
@@ -61,20 +71,34 @@ class CalculatorSimple : AppCompatActivity() {
         return s
     }
 
-    var firstString: String = "0";
+    lateinit var mFirstNumber: TextView
+    lateinit var mPreview: TextView
+    var firstString: String = "0"
     var previewString: String = ""
     var operation: MathOperation = MathOperation.NONE
-    var isComma: Boolean = false;
+    var isComma: Boolean = false
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Zapisanie stanu do Bundle
         outState.putString("firstString", firstString)
         outState.putString("previewString", previewString)
         outState.putBoolean("isComma", isComma)
         outState.putString("operation", operation.name)
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        firstString = savedInstanceState.getString("firstString", "")
+        previewString = savedInstanceState.getString("previewString", "")
+        isComma = savedInstanceState.getBoolean("isComma", false)
+        operation = MathOperation.valueOf(savedInstanceState.getString("operation")!!)
+
+        mFirstNumber = findViewById(R.id.mainNumber) ?: mFirstNumber
+        mPreview = findViewById(R.id.preview) ?: mPreview
+
+        mFirstNumber.text = firstString
+        mPreview.text = previewString
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,9 +109,6 @@ class CalculatorSimple : AppCompatActivity() {
         val mPreview = findViewById<TextView>(R.id.preview)
         mFirstNumber.text = firstString
         mPreview.text = previewString
-
-//        val mFirstNumber = findViewById<TextView>(R.id.mainNumber)
-//        val mPreview = findViewById<TextView>(R.id.preview)
 
         val mButton0 = findViewById<Button>(R.id.button0)
         val mButton1 = findViewById<Button>(R.id.button1)
@@ -108,15 +129,6 @@ class CalculatorSimple : AppCompatActivity() {
         val mButtonSub = findViewById<Button>(R.id.buttonSub)
         val mButtonMul = findViewById<Button>(R.id.buttonMul)
         val mButtonDiv = findViewById<Button>(R.id.buttonDiv)
-
-        savedInstanceState?.let {
-            firstString = it.getString("firstString", "")
-            previewString = it.getString("previewString", "")
-            isComma = it.getBoolean("isComma", false)
-            operation = MathOperation.valueOf(it.getString("operation")!!)
-        }
-
-
 
         mButton0.setOnClickListener {
             if (firstString != "0") firstString += "0"
@@ -177,7 +189,7 @@ class CalculatorSimple : AppCompatActivity() {
         }
 
         mButtonBksp.setOnClickListener {
-            firstString =  if (firstString.length > 1) {
+            firstString = if (firstString.length > 1) {
                 firstString.substring(0, firstString.length - 1)
             } else {
                 "0"
@@ -198,7 +210,7 @@ class CalculatorSimple : AppCompatActivity() {
         }
 
         mButtonSign.setOnClickListener {
-            if (!firstString.equals("0")){
+            if (!firstString.equals("0")) {
                 firstString = if (firstString.get(0) == '-') {
                     firstString.substring(1, firstString.length)
                 } else {
@@ -210,8 +222,9 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonPlus.setOnClickListener {
             if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()){
-                    firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
+                if (previewString.isNotEmpty()) {
+                    firstString =
+                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 }
                 previewString = firstString
                 firstString = "0"
@@ -223,8 +236,9 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonSub.setOnClickListener {
             if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()){
-                    firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
+                if (previewString.isNotEmpty()) {
+                    firstString =
+                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 }
                 previewString = firstString
                 firstString = "0"
@@ -236,8 +250,9 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonMul.setOnClickListener {
             if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()){
-                    firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
+                if (previewString.isNotEmpty()) {
+                    firstString =
+                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 }
                 previewString = firstString
                 firstString = "0"
@@ -250,8 +265,9 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonDiv.setOnClickListener {
             if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()){
-                    firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
+                if (previewString.isNotEmpty()) {
+                    firstString =
+                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 }
                 if (firstString.equals("err")) {
                     firstString = "0"
