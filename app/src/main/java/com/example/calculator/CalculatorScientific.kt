@@ -8,9 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.tan
+import kotlin.math.*
 
 class CalculatorScientific : AppCompatActivity() {
     enum class MathOperation {
@@ -18,16 +16,21 @@ class CalculatorScientific : AppCompatActivity() {
         SUBTRACTION,
         MULTIPLICATION,
         DIVISION,
+        POW,
         NONE
     }
 
-    enum class MathTrigonometric {
+    enum class MathFunction {
         SIN,
         COS,
-        TAN
+        TAN,
+        LN,
+        SQRT,
+        LOG,
+        SQUARE
     }
 
-    fun makeToast(vararg texts: String) {
+    private fun makeToast(vararg texts: String) {
         Toast.makeText(
             this@CalculatorScientific,
             texts.joinToString(separator = "\n"),
@@ -35,7 +38,7 @@ class CalculatorScientific : AppCompatActivity() {
         ).show()
     }
 
-    fun addNumberToString(inputString: String, number: Number): String {
+    private fun addNumberToString(inputString: String, number: Number): String {
         val resultString = if (inputString != "0") {
             inputString + number.toString()
         } else {
@@ -44,12 +47,12 @@ class CalculatorScientific : AppCompatActivity() {
         return resultString
     }
 
-    fun equal(
+    private fun equal(
         firstString: String,
         previewString: String,
         mFirstNumber: TextView,
         mPreview: TextView,
-        operation: CalculatorSimple.MathOperation
+        operation: MathOperation
     ): String {
         if (previewString.isEmpty()) {
             return ""
@@ -59,23 +62,32 @@ class CalculatorScientific : AppCompatActivity() {
         val secondNum = firstString.replace(',', '.').toBigDecimal()
 
         val s =
-            if (operation == CalculatorSimple.MathOperation.DIVISION && secondNum == BigDecimal.ZERO) {
+            if (operation == MathOperation.DIVISION && secondNum == BigDecimal.ZERO) {
                 makeToast("Nie dziel przez 0!")
                 return "err"
             } else {
                 val sum = when (operation) {
-                    CalculatorSimple.MathOperation.MULTIPLICATION -> firstNum * secondNum
-                    CalculatorSimple.MathOperation.ADDITION -> firstNum + secondNum
-                    CalculatorSimple.MathOperation.SUBTRACTION -> firstNum - secondNum
-                    CalculatorSimple.MathOperation.DIVISION -> firstNum.divide(
+                    MathOperation.MULTIPLICATION -> firstNum * secondNum
+                    MathOperation.ADDITION -> firstNum + secondNum
+                    MathOperation.SUBTRACTION -> firstNum - secondNum
+                    MathOperation.DIVISION -> firstNum.divide(
                         secondNum,
                         8,
                         RoundingMode.HALF_UP
                     )
                         .stripTrailingZeros()
-                    CalculatorSimple.MathOperation.NONE -> return ""
+                    MathOperation.POW -> {
+                        val result = firstNum.toDouble().pow(secondNum.toDouble())
+                        if (result.isInfinite()) {
+                            makeToast("Wynik wyszedł poza zakres")
+                            BigDecimal(0)
+                        } else {
+                            result.toBigDecimal()
+                        }
+                    }
+                    MathOperation.NONE -> return ""
                 }
-                val df = DecimalFormat("#.####################")
+                val df = DecimalFormat("#.########")
                 df.format(sum.stripTrailingZeros()).toString().replace('.', ',')
             }
 
@@ -84,14 +96,47 @@ class CalculatorScientific : AppCompatActivity() {
         return s
     }
 
-    fun trigonometric_calc(function: MathTrigonometric, firstString: String): String {
-        this.operation = CalculatorSimple.MathOperation.NONE
+    private fun functionsCalc(function: MathFunction, firstString: String): String {
+        this.operation = MathOperation.NONE
         if (firstString.isNotEmpty()) {
             var value = firstString.replace(',', '.').toBigDecimal()
-            when(function) {
-                MathTrigonometric.SIN->value = sin(value.toDouble()).toBigDecimal()
-                MathTrigonometric.COS->value = cos(value.toDouble()).toBigDecimal()
-                MathTrigonometric.TAN->value = tan(value.toDouble()).toBigDecimal()
+            when (function) {
+                MathFunction.SIN -> value = sin(value.toDouble()).toBigDecimal()
+                MathFunction.COS -> value = cos(value.toDouble()).toBigDecimal()
+                MathFunction.TAN -> value = tan(value.toDouble()).toBigDecimal()
+                MathFunction.LN -> {
+                    value = if (value > BigDecimal(0)) {
+                        ln(value.toDouble()).toBigDecimal()
+                    } else {
+                        makeToast("Niepoprawne dane")
+                        BigDecimal(0)
+                    }
+                }
+                MathFunction.SQRT -> {
+                    value = if (value >= BigDecimal(0)) {
+                        sqrt(value.toDouble()).toBigDecimal()
+                    } else {
+                        makeToast("Niepoprawne dane")
+                        BigDecimal(0)
+                    }
+                }
+                MathFunction.LOG -> {
+                    value = if (value > BigDecimal(0)) {
+                        log10(value.toDouble()).toBigDecimal()
+                    } else {
+                        makeToast("Niepoprawne dane")
+                        BigDecimal(0)
+                    }
+                }
+                MathFunction.SQUARE -> {
+                    val result = value.toDouble().pow(2)
+                    if (result.isInfinite()) {
+                        makeToast("Wynik wyszedł poza zakres")
+                        value = BigDecimal(0)
+                    } else {
+                        value = result.toBigDecimal()
+                    }
+                }
             }
             val df = DecimalFormat("#.########")
             return df.format(value.stripTrailingZeros()).toString().replace('.', ',')
@@ -99,12 +144,12 @@ class CalculatorScientific : AppCompatActivity() {
         return "0"
     }
 
-    lateinit var mFirstNumber: TextView
-    lateinit var mPreview: TextView
-    var firstString: String = "0"
-    var previewString: String = ""
-    var operation: CalculatorSimple.MathOperation = CalculatorSimple.MathOperation.NONE
-    var isComma: Boolean = false
+    private lateinit var mFirstNumber: TextView
+    private lateinit var mPreview: TextView
+    private var firstString: String = "0"
+    private var previewString: String = ""
+    private var operation: MathOperation = MathOperation.NONE
+    private var isComma: Boolean = false
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -119,7 +164,7 @@ class CalculatorScientific : AppCompatActivity() {
         firstString = savedInstanceState.getString("firstString", "")
         previewString = savedInstanceState.getString("previewString", "")
         isComma = savedInstanceState.getBoolean("isComma", false)
-        operation = CalculatorSimple.MathOperation.valueOf(savedInstanceState.getString("operation")!!)
+        operation = MathOperation.valueOf(savedInstanceState.getString("operation")!!)
 
         mFirstNumber = findViewById(R.id.mainNumber) ?: mFirstNumber
         mPreview = findViewById(R.id.preview) ?: mPreview
@@ -159,6 +204,11 @@ class CalculatorScientific : AppCompatActivity() {
         val mButtonSin = findViewById<Button>(R.id.buttonSin)
         val mButtonCos = findViewById<Button>(R.id.buttonCos)
         val mButtonTan = findViewById<Button>(R.id.buttonTan)
+        val mButtonLn = findViewById<Button>(R.id.buttonLn)
+        val mButtonSqrt = findViewById<Button>(R.id.buttonSqrt)
+        val mButtonLog = findViewById<Button>(R.id.buttonLog)
+        val mButtonPow = findViewById<Button>(R.id.buttonXY)
+        val mButtonPowSqrt = findViewById<Button>(R.id.buttonXSquare)
 
         mButton0.setOnClickListener {
             if (firstString != "0") firstString += "0"
@@ -224,7 +274,7 @@ class CalculatorScientific : AppCompatActivity() {
             } else {
                 "0"
             }
-            if (firstString.length == 1 && firstString.get(0) == '-') {
+            if (firstString.length == 1 && firstString[0] == '-') {
                 firstString = "0"
             }
             mFirstNumber.text = firstString
@@ -258,7 +308,7 @@ class CalculatorScientific : AppCompatActivity() {
                 }
                 previewString = firstString
                 firstString = "0"
-                operation = CalculatorSimple.MathOperation.ADDITION
+                operation = MathOperation.ADDITION
                 mFirstNumber.text = "0"
                 mPreview.text = previewString
             }
@@ -272,7 +322,7 @@ class CalculatorScientific : AppCompatActivity() {
                 }
                 previewString = firstString
                 firstString = "0"
-                operation = CalculatorSimple.MathOperation.SUBTRACTION
+                operation = MathOperation.SUBTRACTION
                 mFirstNumber.text = "0"
                 mPreview.text = previewString
             }
@@ -286,7 +336,7 @@ class CalculatorScientific : AppCompatActivity() {
                 }
                 previewString = firstString
                 firstString = "0"
-                operation = CalculatorSimple.MathOperation.MULTIPLICATION
+                operation = MathOperation.MULTIPLICATION
                 mFirstNumber.text = "0"
                 mPreview.text = previewString
             }
@@ -301,11 +351,11 @@ class CalculatorScientific : AppCompatActivity() {
                 }
                 if (firstString.equals("err")) {
                     firstString = "0"
-                    operation = CalculatorSimple.MathOperation.DIVISION
+                    operation = MathOperation.DIVISION
                 } else {
                     previewString = firstString
                     firstString = "0"
-                    operation = CalculatorSimple.MathOperation.DIVISION
+                    operation = MathOperation.DIVISION
                     mFirstNumber.text = "0"
                     mPreview.text = previewString
                 }
@@ -315,38 +365,79 @@ class CalculatorScientific : AppCompatActivity() {
 
 
         mButtonEqual.setOnClickListener {
-            if (operation != CalculatorSimple.MathOperation.NONE) {
+            if (operation != MathOperation.NONE) {
                 firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 if (firstString.equals("err")) {
                     firstString = "0"
-                    operation = CalculatorSimple.MathOperation.DIVISION
+                    operation = MathOperation.DIVISION
                 } else {
-                    operation = CalculatorSimple.MathOperation.NONE
+                    operation = MathOperation.NONE
                     previewString = ""
                 }
-                makeToast("Equal", firstString, previewString)
             }
         }
 
         mButtonSin.setOnClickListener {
-            firstString = trigonometric_calc(MathTrigonometric.SIN, firstString)
+            firstString = functionsCalc(MathFunction.SIN, firstString)
             mFirstNumber.text = firstString
             previewString = ""
             mPreview.text = previewString
         }
 
         mButtonCos.setOnClickListener {
-            firstString = trigonometric_calc(MathTrigonometric.COS, firstString)
+            firstString = functionsCalc(MathFunction.COS, firstString)
             mFirstNumber.text = firstString
             previewString = ""
             mPreview.text = previewString
         }
 
         mButtonTan.setOnClickListener {
-            firstString = trigonometric_calc(MathTrigonometric.TAN, firstString)
+            firstString = functionsCalc(MathFunction.TAN, firstString)
             mFirstNumber.text = firstString
             previewString = ""
             mPreview.text = previewString
+        }
+
+        mButtonLn.setOnClickListener {
+            firstString = functionsCalc(MathFunction.LN, firstString)
+            mFirstNumber.text = firstString
+            previewString = ""
+            mPreview.text = previewString
+        }
+
+        mButtonSqrt.setOnClickListener {
+            firstString = functionsCalc(MathFunction.SQRT, firstString)
+            mFirstNumber.text = firstString
+            previewString = ""
+            mPreview.text = previewString
+        }
+
+        mButtonPowSqrt.setOnClickListener {
+            firstString = functionsCalc(MathFunction.SQUARE, firstString)
+            mFirstNumber.text = firstString
+            previewString = ""
+            mPreview.text = previewString
+        }
+
+        mButtonLog.setOnClickListener {
+            firstString = functionsCalc(MathFunction.LOG, firstString)
+            mFirstNumber.text = firstString
+            previewString = ""
+            mPreview.text = previewString
+        }
+
+        mButtonPow.setOnClickListener {
+            if (!firstString.equals("0")) {
+                if (previewString.isNotEmpty()) {
+                    firstString =
+                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
+                }
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.POW
+                mFirstNumber.text = "0"
+                mPreview.text = previewString
+            }
         }
     }
 }
