@@ -294,7 +294,6 @@ class CalculatorSimple : AppCompatActivity() {
                     operation = MathOperation.NONE
                     previewString = ""
                 }
-                makeToast("Equal", firstString, previewString)
             }
         }
     }
