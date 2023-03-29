@@ -157,7 +157,7 @@
         android:id="@+id/bksp"
         style="@style/customButtonSimpleCalculator"
         android:text="@string/bksp"
-        android:autoSizeMaxTextSize="18dp"
+        android:autoSizeMaxTextSize="23dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
