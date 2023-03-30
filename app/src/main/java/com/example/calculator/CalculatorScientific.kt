@@ -58,12 +58,19 @@ class CalculatorScientific : AppCompatActivity() {
             return ""
         }
 
-        val firstNum = previewString.replace(',', '.').toBigDecimal()
-        val secondNum = firstString.replace(',', '.').toBigDecimal()
+        var firstNum = previewString.replace(',', '.').toBigDecimal()
+        var secondNum = firstString.replace(',', '.').toBigDecimal()
+
+        val regex = Regex("[0].[0]*")
+        if (regex.matches(secondNum.toString())) {
+            secondNum = BigDecimal(0)
+        }
+        if (regex.matches(firstNum.toString())) {
+            firstNum = BigDecimal(0)
+        }
 
         val s =
             if (operation == MathOperation.DIVISION && secondNum == BigDecimal.ZERO) {
-                makeToast("Nie dziel przez 0!")
                 return "err"
             } else {
                 val sum = when (operation) {
@@ -91,6 +98,10 @@ class CalculatorScientific : AppCompatActivity() {
                 df.format(sum.stripTrailingZeros()).toString().replace('.', ',')
             }
 
+        if  (s == "err") {
+            makeToast("Nie dziel przez 0!")
+            return s;
+        }
         if (isTextFit(s, mFirstNumber)) {
             mFirstNumber.text = s
             mPreview.text = ""
@@ -367,6 +378,7 @@ class CalculatorScientific : AppCompatActivity() {
 
         mButtonPlus.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.ADDITION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -391,6 +403,7 @@ class CalculatorScientific : AppCompatActivity() {
 
         mButtonSub.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.SUBTRACTION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -415,6 +428,7 @@ class CalculatorScientific : AppCompatActivity() {
 
         mButtonMul.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.MULTIPLICATION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -440,11 +454,13 @@ class CalculatorScientific : AppCompatActivity() {
 
         mButtonDiv.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.DIVISION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
             if (firstString.equals("err")) {
                 firstString = "0"
+                mFirstNumber.text = firstString
                 operation = MathOperation.DIVISION
             } else {
                 previewString = firstString
@@ -462,12 +478,10 @@ class CalculatorScientific : AppCompatActivity() {
             if (operation != MathOperation.NONE) {
                 firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 if (firstString.equals("err")) {
-                    previewString = firstString
+                    makeToast("Nie dziel przez zero!")
                     firstString = "0"
                     operation = MathOperation.DIVISION
                     mFirstNumber.text = "0"
-                    mPreview.text = previewString
-                    operation = MathOperation.NONE
                 } else {
                     operation = MathOperation.NONE
                     previewString = ""
@@ -540,6 +554,7 @@ class CalculatorScientific : AppCompatActivity() {
             if (!firstString.equals("0")) {
 
                 if (previewString.isNotEmpty()) {
+                    operation = MathOperation.POW
                     firstString =
                         equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 }

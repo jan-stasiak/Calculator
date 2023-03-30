@@ -47,8 +47,17 @@ class CalculatorSimple : AppCompatActivity() {
             return ""
         }
 
-        val firstNum = previewString.replace(',', '.').toBigDecimal()
-        val secondNum = firstString.replace(',', '.').toBigDecimal()
+        var firstNum = previewString.replace(',', '.').toBigDecimal()
+        var secondNum = firstString.replace(',', '.').toBigDecimal()
+
+
+        val regex = Regex("[0].[0]*")
+        if (regex.matches(secondNum.toString())) {
+            secondNum = BigDecimal(0)
+        }
+        if (regex.matches(firstNum.toString())) {
+            firstNum = BigDecimal(0)
+        }
 
         val s = if (operation == MathOperation.DIVISION && secondNum == BigDecimal.ZERO) {
             makeToast("Nie dziel przez 0!")
@@ -279,6 +288,7 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonPlus.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.ADDITION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -303,6 +313,7 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonSub.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.SUBTRACTION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -327,6 +338,7 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonMul.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.MULTIPLICATION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -352,6 +364,7 @@ class CalculatorSimple : AppCompatActivity() {
 
         mButtonDiv.setOnClickListener {
             if (previewString.isNotEmpty()) {
+                operation = MathOperation.DIVISION
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
@@ -375,6 +388,7 @@ class CalculatorSimple : AppCompatActivity() {
                 firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 if (firstString.equals("err")) {
                     firstString = "0"
+                    mFirstNumber.text = "0"
                     operation = MathOperation.DIVISION
                 } else {
                     operation = MathOperation.NONE
