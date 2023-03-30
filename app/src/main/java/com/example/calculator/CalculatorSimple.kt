@@ -62,17 +62,30 @@ class CalculatorSimple : AppCompatActivity() {
                     .stripTrailingZeros()
                 MathOperation.NONE -> return ""
             }
-            val df = DecimalFormat("#.####################")
+            val df = DecimalFormat("#.########")
             df.format(sum.stripTrailingZeros()).toString().replace('.', ',')
         }
 
+        writeOperation()
         mFirstNumber.text = s
         mPreview.text = ""
         return s
     }
 
+    private fun writeOperation() {
+        when (operation) {
+            MathOperation.ADDITION -> mSign.text = "+"
+            MathOperation.SUBTRACTION -> mSign.text = "-"
+            MathOperation.MULTIPLICATION -> mSign.text = "*"
+            MathOperation.DIVISION -> mSign.text = "/"
+            MathOperation.NONE -> mSign.text = ""
+        }
+
+    }
+
     lateinit var mFirstNumber: TextView
     lateinit var mPreview: TextView
+    lateinit var mSign: TextView
     var firstString: String = "0"
     var previewString: String = ""
     var operation: MathOperation = MathOperation.NONE
@@ -95,10 +108,15 @@ class CalculatorSimple : AppCompatActivity() {
 
         mFirstNumber = findViewById(R.id.mainNumber) ?: mFirstNumber
         mPreview = findViewById(R.id.preview) ?: mPreview
+        mSign = findViewById(R.id.textViewSign) ?: mSign
 
+        writeOperation()
         mFirstNumber.text = firstString
         mPreview.text = previewString
     }
+
+    private fun isTextFit(text: String, textView: TextView) =
+        textView.paint.measureText(text) <= (textView.width - textView.paddingLeft - textView.paddingRight)
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +128,7 @@ class CalculatorSimple : AppCompatActivity() {
         mFirstNumber.text = firstString
         mPreview.text = previewString
 
+        mSign = findViewById(R.id.textViewSign)
         val mButton0 = findViewById<Button>(R.id.button0)
         val mButton1 = findViewById<Button>(R.id.button1)
         val mButton2 = findViewById<Button>(R.id.button2)
@@ -121,7 +140,7 @@ class CalculatorSimple : AppCompatActivity() {
         val mButton8 = findViewById<Button>(R.id.button8)
         val mButton9 = findViewById<Button>(R.id.button9)
         val mButtonBksp = findViewById<Button>(R.id.bksp)
-        val mButtonAC = findViewById<Button>(R.id.AC)
+        val mButtonC = findViewById<Button>(R.id.AC)
         val mButtonComma = findViewById<Button>(R.id.buttonComma)
         val mButtonSign = findViewById<Button>(R.id.buttonSign)
         val mButtonPlus = findViewById<Button>(R.id.buttonPlus)
@@ -136,56 +155,94 @@ class CalculatorSimple : AppCompatActivity() {
         }
 
         mButton1.setOnClickListener {
-            firstString = addNumberToString(firstString, 1)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 1, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 1)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton2.setOnClickListener {
-            firstString = addNumberToString(firstString, 2)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 2, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 2)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton3.setOnClickListener {
-            firstString = addNumberToString(firstString, 3)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 3, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 3)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton4.setOnClickListener {
-            firstString = addNumberToString(firstString, 4)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 4, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 4)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton5.setOnClickListener {
-            firstString = addNumberToString(firstString, 5)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 5, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 5)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton6.setOnClickListener {
-            firstString = addNumberToString(firstString, 6)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 6, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 6)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton7.setOnClickListener {
-            firstString = addNumberToString(firstString, 7)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 7, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 7)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton8.setOnClickListener {
-            firstString = addNumberToString(firstString, 8)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 8, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 8)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
         mButton9.setOnClickListener {
-            firstString = addNumberToString(firstString, 9)
-            mFirstNumber.setText(firstString)
+            if (isTextFit(firstString + 9, mFirstNumber)) {
+                firstString = addNumberToString(firstString, 9)
+                mFirstNumber.text = firstString
+            } else {
+                makeToast("Osiągnięto maksymalną ilość znaków!")
+            }
         }
 
-        mButtonAC.setOnClickListener {
+        mButtonC.setOnClickListener {
             firstString = "0"
             previewString = ""
             isComma = false
             mFirstNumber.setText(firstString)
             mPreview.setText(previewString)
+            operation = MathOperation.NONE
+            writeOperation()
         }
 
         mButtonBksp.setOnClickListener {
@@ -221,65 +278,71 @@ class CalculatorSimple : AppCompatActivity() {
         }
 
         mButtonPlus.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
+            }
+            if (isTextFit(firstString, mFirstNumber)) {
                 previewString = firstString
                 firstString = "0"
                 operation = MathOperation.ADDITION
                 mFirstNumber.setText("0")
                 mPreview.setText(previewString)
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
             }
+            writeOperation()
         }
 
         mButtonSub.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                previewString = firstString
-                firstString = "0"
-                operation = MathOperation.SUBTRACTION
-                mFirstNumber.setText("0")
-                mPreview.setText(previewString)
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            previewString = firstString
+            firstString = "0"
+            operation = MathOperation.SUBTRACTION
+            mFirstNumber.setText("0")
+            mPreview.setText(previewString)
+            writeOperation()
         }
 
         mButtonMul.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                previewString = firstString
-                firstString = "0"
-                operation = MathOperation.MULTIPLICATION
-                mFirstNumber.setText("0")
-                mPreview.setText(previewString)
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
-
+            previewString = firstString
+            firstString = "0"
+            operation = MathOperation.MULTIPLICATION
+            mFirstNumber.setText("0")
+            mPreview.setText(previewString)
+            writeOperation()
         }
 
         mButtonDiv.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                if (firstString.equals("err")) {
-                    firstString = "0"
-                    operation = MathOperation.DIVISION
-                } else {
-                    previewString = firstString
-                    firstString = "0"
-                    operation = MathOperation.DIVISION
-                    mFirstNumber.setText("0")
-                    mPreview.setText(previewString)
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            if (firstString.equals("err")) {
+                firstString = "0"
+                operation = MathOperation.DIVISION
+            } else {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.DIVISION
+                mFirstNumber.setText("0")
+                mPreview.setText(previewString)
+            }
+            writeOperation()
         }
 
 
@@ -295,6 +358,7 @@ class CalculatorSimple : AppCompatActivity() {
                     previewString = ""
                 }
             }
+            writeOperation()
         }
     }
 }

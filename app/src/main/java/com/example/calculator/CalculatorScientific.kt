@@ -152,11 +152,24 @@ class CalculatorScientific : AppCompatActivity() {
         return "0"
     }
 
+    private fun writeOperation() {
+        when (operation) {
+            MathOperation.ADDITION -> mSign.text = "+"
+            MathOperation.SUBTRACTION -> mSign.text = "-"
+            MathOperation.MULTIPLICATION -> mSign.text = "*"
+            MathOperation.DIVISION -> mSign.text = "/"
+            MathOperation.POW -> mSign.text = "^"
+            MathOperation.NONE -> mSign.text = ""
+        }
+
+    }
+
     private fun isTextFit(text: String, textView: TextView) =
         textView.paint.measureText(text) <= (textView.width - textView.paddingLeft - textView.paddingRight)
 
     private lateinit var mFirstNumber: TextView
     private lateinit var mPreview: TextView
+    lateinit var mSign: TextView
     private var firstString: String = "0"
     private var previewString: String = ""
     private var operation: MathOperation = MathOperation.NONE
@@ -179,7 +192,9 @@ class CalculatorScientific : AppCompatActivity() {
 
         mFirstNumber = findViewById(R.id.mainNumber) ?: mFirstNumber
         mPreview = findViewById(R.id.preview) ?: mPreview
+        mSign = findViewById(R.id.textViewSign) ?: mSign
 
+        writeOperation()
         mFirstNumber.text = firstString
         mPreview.text = previewString
     }
@@ -193,6 +208,7 @@ class CalculatorScientific : AppCompatActivity() {
         mFirstNumber.text = firstString
         mPreview.text = previewString
 
+        mSign = findViewById(R.id.textViewSign)
         val mButton0 = findViewById<Button>(R.id.button0)
         val mButton1 = findViewById<Button>(R.id.button1)
         val mButton2 = findViewById<Button>(R.id.button2)
@@ -348,98 +364,94 @@ class CalculatorScientific : AppCompatActivity() {
         }
 
         mButtonPlus.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                if (isTextFit(firstString, mFirstNumber)) {
-                    previewString = firstString
-                    firstString = "0"
-                    operation = MathOperation.ADDITION
-                    mFirstNumber.text = "0"
-                    mPreview.text = previewString
-                } else {
-                    makeToast(
-                        "Wynik przekroczył maksymalną liczbę znaków",
-                        "Otrzymany wynik to: " + firstString
-                    )
-                    firstString = "0"
-                    previewString = ""
-                    mFirstNumber.text = firstString
-                    mPreview.text = previewString
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            if (isTextFit(firstString, mFirstNumber)) {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.ADDITION
+                mFirstNumber.text = "0"
+                mPreview.text = previewString
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
+            }
+            writeOperation()
         }
 
         mButtonSub.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                if (isTextFit(firstString, mFirstNumber)) {
-                    previewString = firstString
-                    firstString = "0"
-                    operation = MathOperation.SUBTRACTION
-                    mFirstNumber.text = "0"
-                    mPreview.text = previewString
-                } else {
-                    makeToast(
-                        "Wynik przekroczył maksymalną liczbę znaków",
-                        "Otrzymany wynik to: " + firstString
-                    )
-                    firstString = "0"
-                    previewString = ""
-                    mFirstNumber.text = firstString
-                    mPreview.text = previewString
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            if (isTextFit(firstString, mFirstNumber)) {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.SUBTRACTION
+                mFirstNumber.text = "0"
+                mPreview.text = previewString
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
+            }
+            writeOperation()
         }
 
         mButtonMul.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                if (isTextFit(firstString, mFirstNumber)) {
-                    previewString = firstString
-                    firstString = "0"
-                    operation = MathOperation.MULTIPLICATION
-                    mFirstNumber.text = "0"
-                    mPreview.text = previewString
-                } else {
-                    makeToast(
-                        "Wynik przekroczył maksymalną liczbę znaków",
-                        "Otrzymany wynik to: " + firstString
-                    )
-                    firstString = "0"
-                    previewString = ""
-                    mFirstNumber.text = firstString
-                    mPreview.text = previewString
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            if (isTextFit(firstString, mFirstNumber)) {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.MULTIPLICATION
+                mFirstNumber.text = "0"
+                mPreview.text = previewString
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
+            }
+            writeOperation()
 
         }
 
         mButtonDiv.setOnClickListener {
-            if (!firstString.equals("0")) {
-                if (previewString.isNotEmpty()) {
-                    firstString =
-                        equal(firstString, previewString, mFirstNumber, mPreview, operation)
-                }
-                if (firstString.equals("err")) {
-                    firstString = "0"
-                    operation = MathOperation.DIVISION
-                } else {
-                    previewString = firstString
-                    firstString = "0"
-                    operation = MathOperation.DIVISION
-                    mFirstNumber.text = "0"
-                    mPreview.text = previewString
-                }
+            if (previewString.isNotEmpty()) {
+                firstString =
+                    equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
+            if (firstString.equals("err")) {
+                firstString = "0"
+                operation = MathOperation.DIVISION
+            } else {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.DIVISION
+                mFirstNumber.text = "0"
+                mPreview.text = previewString
+            }
+            writeOperation()
         }
 
 
@@ -448,13 +460,18 @@ class CalculatorScientific : AppCompatActivity() {
             if (operation != MathOperation.NONE) {
                 firstString = equal(firstString, previewString, mFirstNumber, mPreview, operation)
                 if (firstString.equals("err")) {
+                    previewString = firstString
                     firstString = "0"
                     operation = MathOperation.DIVISION
+                    mFirstNumber.text = "0"
+                    mPreview.text = previewString
+                    operation = MathOperation.NONE
                 } else {
                     operation = MathOperation.NONE
                     previewString = ""
                 }
             }
+            writeOperation()
         }
 
         mButtonSin.setOnClickListener {
@@ -541,6 +558,7 @@ class CalculatorScientific : AppCompatActivity() {
                     mPreview.text = previewString
                 }
             }
+            writeOperation()
         }
     }
 }

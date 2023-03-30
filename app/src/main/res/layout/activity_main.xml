@@ -52,7 +52,7 @@ tools:context=".MainActivity" >
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calculator"
+        android:text="Kalkulator"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@ tools:context=".MainActivity" >
         app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/about"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="O AUTORZE"
@@ -94,7 +94,7 @@ tools:context=".MainActivity" >
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/exit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="WYJŚCIE"

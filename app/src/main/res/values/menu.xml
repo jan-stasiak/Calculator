@@ -2,5 +2,11 @@
 <resources>
     <dimen name="button_font_size">15sp</dimen>
     <dimen name="title_font_size">35sp</dimen>
-    <dimen name="scientific_button_land">13sp</dimen>
+    <dimen name="scientific_button_land">23sp</dimen>
+    <dimen name="scientific_display_first">33sp</dimen>
+    <dimen name="simple_sign">33sp</dimen>
+    <dimen name="scientific_sign">33sp</dimen>
+    <dimen name="about_title">45sp</dimen>
+    <dimen name="about_text">35sp</dimen>
+    <dimen name="about_autor">25sp</dimen>
 </resources>

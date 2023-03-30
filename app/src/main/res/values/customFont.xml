@@ -2,9 +2,8 @@
 <resources>
     <style name="customButtonSimpleCalculator">
         <item name="android:autoSizeMinTextSize">7sp</item>
-        <item name="android:autoSizeMaxTextSize">21sp</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/scientific_button_land</item>
         <item name="android:autoSizeStepGranularity">1sp</item>
-        <item name="android:textSize">"@dimen/scientific_button_land"</item>
         <item name="android:autoSizeTextType">uniform</item>
 <!--        <item name="android:background">@drawable/roundedbutton</item>-->
         <item name="android:layout_width">0sp</item>
