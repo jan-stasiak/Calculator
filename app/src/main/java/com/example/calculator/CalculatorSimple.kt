@@ -306,11 +306,22 @@ class CalculatorSimple : AppCompatActivity() {
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
-            previewString = firstString
-            firstString = "0"
-            operation = MathOperation.SUBTRACTION
-            mFirstNumber.setText("0")
-            mPreview.setText(previewString)
+            if (isTextFit(firstString, mFirstNumber)) {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.SUBTRACTION
+                mFirstNumber.setText("0")
+                mPreview.setText(previewString)
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
+            }
             writeOperation()
         }
 
@@ -319,11 +330,23 @@ class CalculatorSimple : AppCompatActivity() {
                 firstString =
                     equal(firstString, previewString, mFirstNumber, mPreview, operation)
             }
-            previewString = firstString
-            firstString = "0"
-            operation = MathOperation.MULTIPLICATION
-            mFirstNumber.setText("0")
-            mPreview.setText(previewString)
+            if (isTextFit(firstString, mFirstNumber)) {
+                previewString = firstString
+                firstString = "0"
+                operation = MathOperation.MULTIPLICATION
+                mFirstNumber.setText("0")
+                mPreview.setText(previewString)
+            } else {
+                makeToast(
+                    "Wynik przekroczył maksymalną liczbę znaków",
+                    "Otrzymany wynik to: " + firstString
+                )
+                firstString = "0"
+                previewString = ""
+                mFirstNumber.text = firstString
+                mPreview.text = previewString
+            }
+
             writeOperation()
         }
 

@@ -220,7 +220,7 @@ class CalculatorScientific : AppCompatActivity() {
         val mButton8 = findViewById<Button>(R.id.button8)
         val mButton9 = findViewById<Button>(R.id.button9)
         val mButtonBksp = findViewById<Button>(R.id.buttonBksp)
-        val mButtonAC = findViewById<Button>(R.id.buttonC)
+        val mButtonC = findViewById<Button>(R.id.buttonC)
         val mButtonComma = findViewById<Button>(R.id.buttonComma)
         val mButtonSign = findViewById<Button>(R.id.buttonSign)
         val mButtonPlus = findViewById<Button>(R.id.buttonPlus)
@@ -323,12 +323,14 @@ class CalculatorScientific : AppCompatActivity() {
             }
         }
 
-        mButtonAC.setOnClickListener {
+        mButtonC.setOnClickListener {
             firstString = "0"
             previewString = ""
             isComma = false
             mFirstNumber.text = firstString
             mPreview.text = previewString
+            operation = MathOperation.NONE
+            writeOperation()
         }
 
         mButtonBksp.setOnClickListener {
